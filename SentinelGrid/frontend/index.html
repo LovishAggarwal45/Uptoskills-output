@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SentinelGrid | Crowd Surveillance</title><link rel="stylesheet" href="/frontend/styles.css"></head>
+<body><header><div><p class="eyebrow">MULTI-VIEW CROWD SURVEILLANCE</p><h1>SentinelGrid</h1></div><div id="state" class="badge">READY</div></header>
+<main><section class="controls"><h2>Live analysis</h2><p>Upload synchronized stills from calibrated cameras. The system detects people, projects feet to the shared ground plane, and fuses overlapping observations.</p>
+<label>Capacity limit <input id="limit" type="number" value="50" min="1"></label><label>Venue / location <input id="location" value="Demo venue"></label>
+<label class="files">Camera frames <input id="frames" type="file" multiple accept="image/*"></label><small>For the supplied WILDTRACK demo, select frames named <code>C1_*.png</code> through <code>C7_*.png</code>. Its calibration loads automatically.</small>
+<button id="run">Analyse synchronized views</button><a class="download" href="/api/reports/events.csv">Download CSV report</a></section>
+<section class="metrics"><article><span>UNIFIED COUNT</span><strong id="count">—</strong><em id="condition">Awaiting frames</em></article><article><span>MODEL CONFIDENCE</span><strong id="confidence">—</strong><em>Mean fused confidence</em></article><article><span>OCCUPANCY RISK</span><strong id="risk">—</strong><em>Count ÷ capacity</em></article></section>
+<section class="content"><div class="panel"><h2>Unified bird’s-eye ground plane</h2><canvas id="map" width="720" height="440"></canvas><p class="legend"><span style="color:#e5ff72">●</span> multi-camera fused &nbsp; · &nbsp; <span style="color:#41c5ff">●</span> single camera &nbsp; · &nbsp; hover for person details &nbsp; · &nbsp; grid unit: metres</p></div><div class="panel"><h2>Individual camera feeds</h2><div id="views" class="views"><p>Camera previews will appear here.</p></div></div></section></main>
+<footer>Geometry-aware multi-view fusion · calibrated cameras · event log and capacity alerting</footer><script src="/frontend/app.js"></script></body></html>
