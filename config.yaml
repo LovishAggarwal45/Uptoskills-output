@@ -1,0 +1,48 @@
+# Configuration for VideoMAE Crowd Outlier Localization System
+
+system:
+  device: "cpu"                  # Options: "cpu", "cuda"
+  seed: 42
+
+# Data Processing & Video Specs
+data:
+  image_size: [128, 128]         # Resolution [H, W] for model processing (fast CPU execution)
+  num_frames: 16                 # Temporal depth per video clip
+  tubelet_size: 2                # Temporal patch length (t=2)
+  patch_size: 16                 # Spatial patch size (p=16)
+  channels: 3                    # RGB video channels
+  stride: 4                      # Frame stride for sliding window extraction
+
+# Model Architecture (Lightweight Spatio-Temporal ViT)
+model:
+  embed_dim: 128                 # Patch embedding dimension
+  encoder_depth: 4               # ViT Encoder layers
+  encoder_heads: 4               # ViT Encoder attention heads
+  decoder_depth: 2               # ViT Decoder layers
+  decoder_heads: 4               # ViT Decoder attention heads
+  decoder_embed_dim: 64          # Decoder embedding dimension
+  masking_ratio: 0.75            # Masking ratio (75% patches masked during SSL)
+  mlp_ratio: 4.0                 # Feedforward expansion ratio
+
+# Training Hyperparameters
+training:
+  batch_size: 4
+  epochs: 15
+  learning_rate: 0.001
+  weight_decay: 0.05
+  checkpoint_path: "checkpoints/videomae_crowd.pt"
+
+# Outlier Detection & Anomaly Alerts
+detection:
+  anomaly_threshold: 1.04        # Anomaly threshold (1.04x reconstruction MSE relative to normal baseline)
+  heatmap_alpha: 0.5             # Heatmap overlay transparency (0.0 - 1.0)
+  smoothing_sigma: 1.5           # Gaussian smoothing sigma for spatial heatmap
+  alert_cooldown_frames: 10      # Minimum frames between consecutive alerts
+  spatial_grid: [4, 4]           # Grid division for localized anomaly spatial reports
+
+# Output Paths
+output:
+  annotated_video: "outputs/output_annotated.mp4"
+  csv_report: "outputs/anomaly_events.csv"
+  timeline_plot: "outputs/anomaly_timeline.png"
+  spatial_summary: "outputs/spatial_heatmap_summary.png"
