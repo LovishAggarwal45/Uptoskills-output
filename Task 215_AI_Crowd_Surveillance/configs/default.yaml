@@ -1,0 +1,89 @@
+alerts:
+  confidence_threshold: 0.52
+  cooldown_seconds: 3.0
+  csv_report: outputs/reports/event_report.csv
+  enable_console_alert: true
+  log_file: outputs/alerts/surveillance_alerts.log
+dataset:
+  anomaly_class_ids:
+  - 1
+  - 2
+  classes:
+  - Normal
+  - Fighting
+  - Panic_Dispersal
+  metadata_dir: datasets/metadata
+  name: cctv_surveillance
+  num_classes: 3
+  root: datasets
+  splits_dir: datasets/splits
+localization:
+  merge_gap_seconds: 2.0
+  min_box_area_ratio: 0.005
+  min_duration_seconds: 1.0
+  spatial_method: motion_energy_pseudo_localization
+  spatial_threshold: 0.35
+  temporal_smoothing_kernel: 5
+  threshold: 0.52
+model:
+  backbone: resnet18
+  dropout: 0.15
+  encoder_layers: 2
+  encoder_type: transformer
+  flow_feature_dim: 128
+  fusion_dim: 256
+  mil_top_k: 3
+  nheads: 4
+  pretrained: true
+  freeze_rgb_backbone: true
+  rgb_feature_dim: 512
+runtime:
+  device: auto
+  num_workers: 0
+  seed: 42
+training:
+  batch_size: 4
+  checkpoint_dir: checkpoints
+  early_stopping_patience: 5
+  epochs: 10
+  learning_rate: 0.0005
+
+  classification_weight: 2.0
+  anomaly_weight: 1.0
+  ranking_weight: 0.5
+
+  loss_type: mil_ranking
+  smoothness_weight: 0.0001
+  sparsity_weight: 0.0001
+  ranking_margin: 1.0
+  weight_decay: 0.0001
+video:
+  buffer_chunk_size: 128
+  clip_length: 16
+  flow_size:
+  - 112
+  - 112
+  image_size:
+  - 224
+  - 224
+  max_duration_seconds: 3600
+  stride: 16
+  target_fps: 16
+visualization:
+  color_map:
+    Fighting:
+    - 0
+    - 0
+    - 255
+    Normal:
+    - 0
+    - 255
+    - 0
+    Panic_Dispersal:
+    - 0
+    - 165
+    - 255
+  draw_boxes: true
+  draw_flow: true
+  draw_timeline: true
+  output_video_fps: 16

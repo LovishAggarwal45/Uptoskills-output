@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# Datasets and Checkpoints (Large Binary Artifacts)
+datasets/raw/*
+!datasets/raw/.gitkeep
+datasets/processed/*
+!datasets/processed/.gitkeep
+checkpoints/*
+!checkpoints/.gitkeep
+outputs/annotated_videos/*
+!outputs/annotated_videos/.gitkeep
+
+# System / OS files
+.DS_Store
+Thumbs.db
+
+# Generated experiment outputs and reports
+outputs/*
+reports/*
+
+# Local dataset backup files
+datasets/metadata/*_backup.csv

@@ -1,0 +1,45 @@
+# Model Architecture Configuration
+
+architecture:
+  name: "TwoStreamWSSTALNet"
+  description: "Two-Stream Weakly-Supervised Spatio-Temporal Action Localization Network"
+
+  rgb_stream:
+    backbone: "resnet18"
+    pretrained: true
+    pooling: "adaptive_avg_pool2d"
+    feature_dim: 512
+
+  motion_stream:
+    type: "farneback_dense_flow"
+    input_channels: 2
+    conv_layers:
+      - [2, 32, 3, 2]
+      - [32, 64, 3, 2]
+      - [64, 128, 3, 2]
+    feature_dim: 128
+
+  fusion:
+    method: "concat_linear"
+    input_dim: 640 # 512 + 128
+    hidden_dim: 256
+    dropout: 0.15
+
+  temporal_encoder:
+    type: "transformer_encoder"
+    num_layers: 2
+    nhead: 4
+    dim_feedforward: 512
+    dropout: 0.15
+    activation: "gelu"
+
+  mil_head:
+    type: "attention_mil"
+    top_k: 3
+    temperature: 1.0
+    num_classes: 3
+
+  loss:
+    ranking_margin: 1.0
+    smoothness_weight: 0.0001
+    sparsity_weight: 0.0001

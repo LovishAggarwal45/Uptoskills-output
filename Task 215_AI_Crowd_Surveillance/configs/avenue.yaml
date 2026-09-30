@@ -1,0 +1,60 @@
+# ============================================================
+# CUHK AVENUE SURVEILLANCE DATASET CONFIGURATION
+# ============================================================
+
+dataset:
+  name: avenue
+  root: D:/Avenue-Dataset/extracted/Avenue Dataset
+  ground_truth_root: D:/Avenue-Dataset/ground_truth/ground_truth_demo/testing_label_mask
+  metadata_file: datasets/metadata/avenue_metadata.csv
+  train_split: train
+  test_split: test
+
+video:
+  clip_length: 16
+  stride: 16
+  target_fps: 16
+  image_size: [224, 224]
+  flow_size: [112, 112]
+
+model:
+  backbone: resnet18
+  pretrained: true
+  rgb_feature_dim: 512
+  flow_feature_dim: 128
+  fusion_dim: 256
+  encoder_type: transformer
+  encoder_layers: 2
+  nheads: 4
+  dropout: 0.15
+  mil_top_k: 3
+
+runtime:
+  device: auto
+  num_workers: 0
+  seed: 42
+
+evaluation:
+  anomaly_threshold: 0.50
+  spatial_threshold: 0.35
+  temporal_smoothing_kernel: 5
+  min_duration_seconds: 0.5
+  output_dir: reports/metrics
+  save_frame_metrics: true
+  save_video_metrics: true
+
+# ============================================================
+# AVENUE ONE-CLASS EXPERIMENT G CONFIGURATION
+# ============================================================
+
+avenue_oneclass:
+  enabled: true
+  train_video_ids: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+  validation_video_ids: ["13", "14", "15", "16"]
+  validation_normal_percentile: 99.0
+  score_smoothing_window: 5
+  min_anomaly_duration_seconds: 0.5
+  merge_gap_seconds: 0.5
+  checkpoint_dir: checkpoints/avenue
+  output_dir: reports/metrics/avenue_oneclass
+

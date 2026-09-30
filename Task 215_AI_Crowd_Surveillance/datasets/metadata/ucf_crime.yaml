@@ -1,0 +1,33 @@
+dataset_name: "UCF-Crime"
+full_title: "Real-world Anomaly Detection in Surveillance Videos"
+authors: "Waqas Sultani, Chen Chen, Mubarak Shah (CVPR 2018)"
+purpose: "Large-scale benchmark for detecting abnormal activities in untrimmed real-world CCTV surveillance footage."
+dataset_size: "~54 GB (1,900 long untrimmed CCTV videos, ~128 hours)"
+classes:
+  - "Normal"
+  - "Abuse"
+  - "Arrest"
+  - "Arson"
+  - "Assault"
+  - "Burglary"
+  - "Explosion"
+  - "Fighting"
+  - "Robbery"
+  - "Shooting"
+  - "Shoplifting"
+  - "Stealing"
+  - "Vandalism"
+  - "RoadAccidents"
+
+annotation_details:
+  training_labels: "Weak video-level binary/class labels (Video is marked Abnormal or Normal; no frame-level or bounding box labels)."
+  temporal_annotations_available: true
+  temporal_scope: "Temporal start and end frame intervals provided ONLY for the 290 test videos to benchmark temporal localization."
+  spatial_annotations_available: false
+  spatial_note: "CRITICAL: UCF-Crime contains ZERO spatial bounding boxes. Any spatial localization on UCF-Crime is pseudo-localization (CAM / motion ROI / detector) and MUST NOT be represented as ground truth."
+
+licensing_and_access:
+  license: "Research / Non-commercial academic use"
+  source_url: "https://www.crcv.ucf.edu/research/projects/real-world-anomaly-detection-in-surveillance-videos/"
+
+suitability_for_project: "Industry standard gold-standard benchmark for weakly-supervised temporal anomaly localization in CCTV footage. It validates the exact Multiple Instance Learning (MIL) ranking framework formulated by Sultani et al."
