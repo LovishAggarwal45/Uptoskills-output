@@ -1,0 +1,106 @@
+project:
+  name: ucf_crime_binary
+  description: >
+    Binary weakly-supervised anomaly detection on locally
+    available UCF-Crime videos.
+
+dataset:
+  name: ucf_crime_binary
+  metadata_file: datasets/metadata/ucf_binary_metadata.csv
+
+  num_classes: 2
+
+  classes:
+    - Normal
+    - Anomaly
+
+  anomaly_class_ids:
+    - 1
+
+  train_split: train
+  validation_split: val
+  test_split: test
+
+video:
+  clip_length: 16
+  stride: 16
+  target_fps: 16
+
+  image_size:
+    - 224
+    - 224
+
+  flow_size:
+    - 112
+    - 112
+
+  max_duration_seconds: 3600
+  buffer_chunk_size: 128
+
+model:
+  backbone: resnet18
+
+  pretrained: true
+  freeze_rgb_backbone: false
+
+  rgb_feature_dim: 512
+  flow_feature_dim: 128
+  fusion_dim: 256
+
+  encoder_type: transformer
+  encoder_layers: 2
+  nheads: 4
+
+  dropout: 0.15
+  mil_top_k: 3
+
+training:
+  epochs: 2
+  batch_size: 4
+
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+
+  early_stopping_patience: 5
+
+  classification_weight: 2.0
+  anomaly_weight: 1.0
+  ranking_weight: 0.5
+
+  loss_type: mil_ranking
+  ranking_margin: 1.0
+
+  smoothness_weight: 0.0001
+  sparsity_weight: 0.0001
+  checkpoint_dir: checkpoints/ucf_binary_finetune
+alerts:
+  confidence_threshold: 0.52
+  cooldown_seconds: 3.0
+
+  enable_console_alert: true
+
+  log_file: outputs/alerts/ucf_binary_alerts.log
+
+  csv_report: outputs/reports/ucf_binary_event_report.csv
+
+visualization:
+  draw_boxes: true
+  draw_flow: true
+  draw_timeline: true
+
+  output_video_fps: 16
+
+  color_map:
+    Normal:
+      - 0
+      - 255
+      - 0
+
+    Anomaly:
+      - 0
+      - 0
+      - 255
+
+runtime:
+  seed: 42
+  device: auto

@@ -1,0 +1,26 @@
+dataset_name: "XD-Violence"
+full_title: "Large-Scale Multi-modal Video Violence Detection"
+authors: "Peng Wu, Jing Liu, Yujia Shi, Yuxin Sun, Fangtao Shao, Zhaoyang Wu (ECCV 2020)"
+purpose: "Large-scale benchmark for untrimmed violence detection incorporating surveillance footage, games, movies, and mobile videos."
+dataset_size: "~200 GB (4,754 untrimmed videos, ~217 hours)"
+classes:
+  - "Normal"
+  - "Fighting"
+  - "Shooting"
+  - "Riot"
+  - "Abuse"
+  - "CarAccident"
+  - "Explosion"
+
+annotation_details:
+  training_labels: "Weak video-level binary and multi-label annotations."
+  temporal_annotations_available: true
+  temporal_scope: "Frame-level temporal interval ground truth provided for the 800 test videos."
+  spatial_annotations_available: false
+  spatial_note: "Does not provide spatial bounding boxes. Spatial localization must use attention/motion pseudo-localization."
+
+licensing_and_access:
+  license: "Academic and research use only upon agreement with the authors"
+  source_url: "https://roc-ng.github.io/XD-Violence/"
+
+suitability_for_project: "Provides high-complexity multi-scenario violence detection with both visual and audio streams, representing state-of-the-art weakly-supervised evaluation."

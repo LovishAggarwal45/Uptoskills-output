@@ -1,0 +1,5 @@
+video_id,filename,path,label,label_id,split,duration,fps,num_frames,is_anomaly
+test_normal_01,test_normal_01.mp4,datasets/raw/test_normal_01.mp4,Normal,0,test,12.0,16,192,0
+test_fight_01,test_fight_01.mp4,datasets/raw/test_fight_01.mp4,Fighting,1,test,14.0,16,224,1
+test_fight_02,test_fight_02.mp4,datasets/raw/test_fight_02.mp4,Fighting,1,test,15.0,16,240,1
+test_panic_01,test_panic_01.mp4,datasets/raw/test_panic_01.mp4,Panic_Dispersal,2,test,13.0,16,208,1

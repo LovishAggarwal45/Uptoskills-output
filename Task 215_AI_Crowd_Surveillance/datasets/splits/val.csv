@@ -1,0 +1,4 @@
+video_id,filename,path,label,label_id,split,duration,fps,num_frames,is_anomaly
+val_normal_01,val_normal_01.mp4,datasets/raw/val_normal_01.mp4,Normal,0,val,8.0,16,128,0
+val_fight_01,val_fight_01.mp4,datasets/raw/val_fight_01.mp4,Fighting,1,val,9.0,16,144,1
+val_panic_01,val_panic_01.mp4,datasets/raw/val_panic_01.mp4,Panic_Dispersal,2,val,8.0,16,128,1

@@ -1,0 +1,8 @@
+video_id,filename,path,label,label_id,split,duration,fps,num_frames,is_anomaly
+train_normal_01,train_normal_01.mp4,datasets/raw/train_normal_01.mp4,Normal,0,train,8.0,16,128,0
+train_normal_02,train_normal_02.mp4,datasets/raw/train_normal_02.mp4,Normal,0,train,10.0,16,160,0
+train_normal_03,train_normal_03.mp4,datasets/raw/train_normal_03.mp4,Normal,0,train,7.0,16,112,0
+train_fight_01,train_fight_01.mp4,datasets/raw/train_fight_01.mp4,Fighting,1,train,10.0,16,160,1
+train_fight_02,train_fight_02.mp4,datasets/raw/train_fight_02.mp4,Fighting,1,train,8.0,16,128,1
+train_panic_01,train_panic_01.mp4,datasets/raw/train_panic_01.mp4,Panic_Dispersal,2,train,9.0,16,144,1
+train_panic_02,train_panic_02.mp4,datasets/raw/train_panic_02.mp4,Panic_Dispersal,2,train,8.0,16,128,1

@@ -1,0 +1,29 @@
+# Dataset Configuration & Annotation Specifications
+
+supported_datasets:
+  - name: "ucf_crime"
+    description: "UCF-Crime: Surveillance Anomaly Dataset"
+    num_classes: 14
+    annotation_type: "weak_video_level_train_temporal_test"
+    temporal_annotations: true
+    spatial_annotations: false
+    metadata_file: "datasets/metadata/ucf_crime.yaml"
+
+  - name: "xd_violence"
+    description: "XD-Violence: Multi-modal Violence Detection in CCTV and Untrimmed Videos"
+    num_classes: 6
+    annotation_type: "weak_video_level_train_temporal_test"
+    temporal_annotations: true
+    spatial_annotations: false
+    metadata_file: "datasets/metadata/xd_violence.yaml"
+
+  - name: "cctv_benchmark"
+    description: "Curated Local CCTV Surveillance Benchmark Suite"
+    num_classes: 3
+    classes: ["Normal", "Fighting", "Panic_Dispersal"]
+    annotation_type: "weak_video_level_train_temporal_test"
+    temporal_annotations: true
+    spatial_annotations: false # Note: spatial is motion/CAM pseudo-localization
+    metadata_file: "datasets/metadata/cctv_benchmark.yaml"
+
+active_dataset: "cctv_benchmark"

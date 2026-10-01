@@ -1,0 +1,21 @@
+dataset_name: "CCTV-Benchmark"
+full_title: "Local Curated Surveillance Benchmark Suite"
+purpose: "Lightweight, reproducible benchmark suite for rapid end-to-end testing, development, and CPU training of weakly-supervised action localization in CCTV videos."
+dataset_size: "Variable / Configurable (Local synthesized & real surveillance clips, ~50-500 MB)"
+classes:
+  - "Normal"
+  - "Fighting"
+  - "Panic_Dispersal"
+
+annotation_details:
+  training_labels: "Video-level labels (Normal vs Fighting vs Panic_Dispersal). No frame-level annotations used during training."
+  temporal_annotations_available: true
+  temporal_scope: "Precise start_time (seconds) and end_time (seconds) annotations provided in validation/test ground-truth JSON/CSV."
+  spatial_annotations_available: false
+  spatial_note: "Spatial localization produces attention heatmaps and motion-energy pseudo-bounding boxes; clearly reported as non-ground-truth."
+
+licensing_and_access:
+  license: "Open synthetic & public domain CCTV surveillance excerpts"
+  source_url: "Generated locally via scripts/prepare_dataset.py"
+
+suitability_for_project: "Enables immediate 100% testable execution on local development machines without multi-gigabyte downloads, providing a proven, reproducible baseline."
