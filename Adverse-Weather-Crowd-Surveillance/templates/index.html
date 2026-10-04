@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adverse Weather Crowd Surveillance Pipeline (Prototype)</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Header & Top Navigation -->
+    <header>
+        <div class="brand">
+            <div class="brand-icon">&#9672;</div>
+            <div>
+                <div class="brand-title">Adverse Weather Dynamic De-Hazing & Crowd Counting Pipeline</div>
+                <div class="brand-subtitle">Surveillance Research Prototype &amp; Operational Demonstration</div>
+            </div>
+        </div>
+        <div class="system-status-pills">
+            <div class="pill active">
+                <span class="dot pulse"></span>
+                <span>DEVICE: {{ device.upper() }}</span>
+            </div>
+            <div class="pill active">
+                <span class="dot"></span>
+                <span>DEHAZE-NET: LOADED</span>
+            </div>
+            <div class="pill active">
+                <span class="dot"></span>
+                <span>CSRNET: CALIBRATED</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Global Alert Banner -->
+    <div id="alert-banner" class="alert-banner LOW">
+        <span id="alert-banner-text">
+            <strong>[LOW] SYSTEM READY</strong> &mdash; {{ config.location }} | Max Safe Capacity: {{ config.max_crowd_capacity }} persons | Awaiting Video/Image Input
+        </span>
+    </div>
+
+    <main class="container">
+
+        <!-- Telemetry Metric HUD -->
+        <section class="telemetry-grid">
+            <!-- 1. Estimated Crowd Count -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>Crowd Count (Integral)</span>
+                    <span style="font-size: 1.1rem;">&#128101;</span>
+                </div>
+                <div class="metric-value" id="metric-count">0</div>
+                <div class="metric-sub" id="metric-count-sub">Peak Density: 0.0000 | Safe Cap: {{ config.max_crowd_capacity }}</div>
+            </div>
+
+            <!-- 2. Optical Transmission & Condition -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>Optical Visibility (Q_vis)</span>
+                    <span id="badge-condition" class="badge-condition badge-clear">CLEAR</span>
+                </div>
+                <div class="metric-value" id="metric-vis">1.000</div>
+                <div class="metric-sub" id="metric-vis-sub">Airlight A: [0.00, 0.00, 0.00]</div>
+            </div>
+
+            <!-- 3. Degradation Analysis -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>Degradation Heuristics</span>
+                    <span style="font-size: 1.1rem;">&#127787;</span>
+                </div>
+                <div class="metric-value" style="font-size: 1.1rem; line-height: 1.4;" id="metric-degrade-exp">
+                    Awaiting camera frame analysis...
+                </div>
+                <div class="metric-sub">Physics-based Dark Channel &amp; Gradient Metrics</div>
+            </div>
+
+            <!-- 4. Operational Risk Score -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>Operational Risk Score</span>
+                    <span style="font-size: 1.1rem;">&#9888;</span>
+                </div>
+                <div class="metric-value" id="metric-risk">0%</div>
+                <div class="risk-bar-container">
+                    <div id="risk-bar" class="risk-bar"></div>
+                </div>
+                <div class="metric-sub" id="metric-risk-sub">Level: LOW (Multiplier: 1.0x)</div>
+            </div>
+
+            <!-- 5. Latency & Throughput -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>Processing Latency</span>
+                    <span style="font-size: 1.1rem;">&#9201;</span>
+                </div>
+                <div class="metric-value" id="metric-latency">0 ms</div>
+                <div class="metric-sub" id="metric-latency-sub">0.0 FPS | Loc: {{ config.location }}</div>
+            </div>
+        </section>
+
+        <!-- 4-Panel Synchronized Visual Grid -->
+        <section class="quad-stream-section">
+            <div class="quad-grid">
+                <!-- Panel 1: Original Input Frame -->
+                <div class="video-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>1. Raw Degraded Feed</span>
+                        </div>
+                        <span class="panel-tag">ATMOSPHERIC INPUT I(x)</span>
+                    </div>
+                    <div class="panel-viewport">
+                        <img id="img-original" src="/static/placeholder.png" alt="Raw Camera Feed" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'><rect width=\'100%\' height=\'100%\' fill=\'%23111827\'/><text x=\'50%\' y=\'50%\' fill=\'%236b7280\' font-size=\'14\' text-anchor=\'middle\' font-family=\'monospace\'>[ Raw Input Frame ]</text></svg>'">
+                    </div>
+                    <div class="panel-footer">
+                        <span>Outdoor Degraded Surveillance Stream</span>
+                        <span id="panel-orig-sub">Resolution: Standby</span>
+                    </div>
+                </div>
+
+                <!-- Panel 2: Optical Transmission Map -->
+                <div class="video-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>2. Optical Transmission Map</span>
+                        </div>
+                        <span class="panel-tag">ESTIMATED t(x) &isin; [0.05, 1.0]</span>
+                    </div>
+                    <div class="panel-viewport">
+                        <img id="img-transmission" src="/static/placeholder.png" alt="Transmission Map" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'><rect width=\'100%\' height=\'100%\' fill=\'%23111827\'/><text x=\'50%\' y=\'50%\' fill=\'%236b7280\' font-size=\'14\' text-anchor=\'middle\' font-family=\'monospace\'>[ Transmission Map t(x) ]</text></svg>'">
+                    </div>
+                    <div class="panel-footer">
+                        <span>Depth / Attenuation Map (Colormap Bone)</span>
+                        <span id="panel-trans-sub">Physics-Guided DehazeNet</span>
+                    </div>
+                </div>
+
+                <!-- Panel 3: Restored Dehazed Output with Bounding Boxes -->
+                <div class="video-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>3. Restored Frame &amp; Pedestrian Bounding Boxes</span>
+                        </div>
+                        <span class="panel-tag">RESTORED J(x) + BOUNDING BOXES</span>
+                    </div>
+                    <div class="panel-viewport">
+                        <img id="img-restored" src="/static/placeholder.png" alt="Restored Frame with Bounding Boxes" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'><rect width=\'100%\' height=\'100%\' fill=\'%23111827\'/><text x=\'50%\' y=\'50%\' fill=\'%236b7280\' font-size=\'14\' text-anchor=\'middle\' font-family=\'monospace\'>[ Restored Output J(x) ]</text></svg>'">
+                    </div>
+                    <div class="panel-footer">
+                        <span>Physics Dehazing + Localized Pedestrian Boxes</span>
+                        <span id="panel-rest-sub">Emerald Bounding Boxes</span>
+                    </div>
+                </div>
+
+                <!-- Panel 4: Congested Crowd Density Map -->
+                <div class="video-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>4. Crowd Density Heatmap</span>
+                        </div>
+                        <span class="panel-tag">CSRNET REGRESSION D(x,y)</span>
+                    </div>
+                    <div class="panel-viewport">
+                        <img id="img-density" src="/static/placeholder.png" alt="Crowd Density Map" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'><rect width=\'100%\' height=\'100%\' fill=\'%23111827\'/><text x=\'50%\' y=\'50%\' fill=\'%236b7280\' font-size=\'14\' text-anchor=\'middle\' font-family=\'monospace\'>[ CSRNet Density Map ]</text></svg>'">
+                    </div>
+                    <div class="panel-footer">
+                        <span>Spatial Density Regression (Colormap JET)</span>
+                        <span id="panel-dens-sub">Calibrated Output Layer</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Surveillance Control Hub & Pipeline Management -->
+        <section class="control-hub">
+            <!-- Left Card: Input Sources & Processing -->
+            <div class="card">
+                <div class="card-title">
+                    <span>&#9881; Surveillance Input &amp; Pipeline Execution</span>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="tab-image">Single Frame Analysis</button>
+                    <button class="tab-btn" data-tab="tab-video">Periodic Video Surveillance</button>
+                    <button class="tab-btn" data-tab="tab-live">Live Stream Simulation</button>
+                </div>
+
+                <!-- Tab 1: Image Processing -->
+                <div id="tab-image" class="tab-pane active">
+                    <form id="image-upload-form">
+                        <div class="form-group">
+                            <label class="form-label" for="image-file-input">Select Outdoor Surveillance Frame</label>
+                            <input type="file" id="image-file-input" class="form-control" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="image-location-override">Location Override (Optional)</label>
+                            <input type="text" id="image-location-override" class="form-control" placeholder="e.g. West-Concourse-Gate-4">
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; align-items: center;">
+                            <button type="submit" id="btn-submit-image" class="btn btn-primary">
+                                &#9654; Process Surveillance Frame
+                            </button>
+                            <span id="image-status-text" style="font-size: 0.8rem; color: var(--text-secondary); font-family: monospace;"></span>
+                        </div>
+                    </form>
+
+                    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--card-border);">
+                        <label class="form-label">Or Instant Test with Real Human Crowd Photos (Different Authentic Locations):</label>
+                        <div class="preset-buttons">
+                            <button type="button" class="btn-preset" data-preset="clear">
+                                <strong>&#9728; 1. Shibuya Crossing, Tokyo (Clear Day)</strong>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Real pedestrians in clear daylight (Baseline Vis)</div>
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="fog">
+                                <strong>&#127787; 2. Prague City Center (Heavy Fog)</strong>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Real street crowd under thick atmospheric fog</div>
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="rain">
+                                <strong>&#127783; 3. Hanzhong Street, Taipei (Monsoon Rain)</strong>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Real pedestrians with umbrellas under rain streaks</div>
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="glare">
+                                <strong>&#128262; 4. Times Square, New York (Lens Glare)</strong>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Real outdoor crowd facing intense solar lens bloom</div>
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="empty">
+                                <strong>&#127753; 5. Empty Bridge Control (0 People)</strong>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Empty bridge in fog &mdash; Verifies 0 Count &amp; 0 Boxes</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Periodic Video Processing -->
+                <div id="tab-video" class="tab-pane">
+                    <form id="video-upload-form">
+                        <div class="form-group">
+                            <label class="form-label" for="video-file-input">Select Surveillance Video Clip (MP4/AVI)</label>
+                            <input type="file" id="video-file-input" class="form-control" accept="video/*">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="video-sampling-interval">Periodic Sampling Interval (Frames)</label>
+                                <input type="number" id="video-sampling-interval" class="form-control" value="3" min="1" max="30">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="video-location-override">Location Override</label>
+                                <input type="text" id="video-location-override" class="form-control" placeholder="e.g. Metro-Platform-B">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; align-items: center;">
+                            <button type="submit" id="btn-submit-video" class="btn btn-primary">
+                                &#9654; Run Periodic Video Surveillance
+                            </button>
+                            <span id="video-status-text" style="font-size: 0.8rem; color: var(--text-secondary); font-family: monospace;"></span>
+                        </div>
+                    </form>
+
+                    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--card-border);">
+                        <label class="form-label">Or Instant Test with Pre-Packaged Surveillance Videos (No Dataset Needed):</label>
+                        <div class="preset-buttons">
+                            <button type="button" class="btn-preset btn-video-preset" data-video-preset="fog">
+                                <strong>&#127787; Sample Video: Heavy Fog Plaza</strong>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">surveillance_fog_sample.mp4 (Dynamic Scattering)</div>
+                            </button>
+                            <button type="button" class="btn-preset btn-video-preset" data-video-preset="rain">
+                                <strong>&#127783; Sample Video: Monsoon Rain Surge</strong>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">surveillance_rain_sample.mp4 (Directional Streaks)</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Annotated Video Player Result -->
+                    <div id="video-result-container" style="display: none; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--card-border);">
+                        <label class="form-label">Annotated Dual-Panel Output Stream with Real-Time HUD:</label>
+                        <div style="border-radius: 6px; overflow: hidden; background: #000; border: 1px solid var(--card-border); margin-top: 0.5rem;">
+                            <video id="video-player" controls style="width: 100%; display: block;"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Live MJPEG Feed Simulation -->
+                <div id="tab-live" class="tab-pane">
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        Streams authentic outdoor CCTV surveillance footage of actual human pedestrians through the real-time physics-guided dehazing and CSRNet crowd density pipeline.
+                    </p>
+                    <div style="margin-bottom: 1rem;">
+                        <button id="btn-toggle-stream" class="btn btn-primary">
+                            &#9654; Start Live Surveillance Stream
+                        </button>
+                    </div>
+                    <div style="width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 6px; overflow: hidden; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
+                        <img id="live-stream-img" src="" alt="Live Stream" style="display: none; width: 100%; height: 100%; object-fit: contain;">
+                        <div id="live-placeholder-text" style="color: var(--text-muted); font-size: 0.85rem; font-family: monospace;">
+                            Live Stream Standby &mdash; Click "Start Live Surveillance Stream" to connect to MJPEG feed.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card: System Parameters & Config -->
+            <div class="card">
+                <div class="card-title">
+                    <span>&#128736; Configurable Parameters</span>
+                </div>
+                <form id="config-form">
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-location">Default Camera Location</label>
+                        <input type="text" id="cfg-location" class="form-control" value="{{ config.location }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-capacity">Max Safe Crowd Capacity (Persons)</label>
+                        <input type="number" id="cfg-capacity" class="form-control" value="{{ config.max_crowd_capacity }}" step="1" min="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-interval">Default Sampling Interval (Frames)</label>
+                        <input type="number" id="cfg-interval" class="form-control" value="{{ config.sampling_interval }}" step="1" min="1">
+                    </div>
+                    
+                    <label class="form-label" style="margin-top: 1rem;">Adverse Weather Risk Multipliers</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                        <div>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">Clear:</span>
+                            <input type="number" id="cfg-mult-clear" class="form-control" value="{{ config.weather_multipliers.clear }}" step="0.05" min="0.5">
+                        </div>
+                        <div>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">Fog:</span>
+                            <input type="number" id="cfg-mult-fog" class="form-control" value="{{ config.weather_multipliers.fog }}" step="0.05" min="0.5">
+                        </div>
+                        <div>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">Rain:</span>
+                            <input type="number" id="cfg-mult-rain" class="form-control" value="{{ config.weather_multipliers.rain }}" step="0.05" min="0.5">
+                        </div>
+                        <div>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">Glare:</span>
+                            <input type="number" id="cfg-mult-glare" class="form-control" value="{{ config.weather_multipliers.glare }}" step="0.05" min="0.5">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary" style="width: 100%;">
+                        Update Configuration
+                    </button>
+                    <div id="config-status-text" style="font-size: 0.75rem; color: #10b981; margin-top: 0.5rem; text-align: center; font-family: monospace;"></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- CSV Event Audit Log Section -->
+        <section class="log-section">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="card-title" style="margin-bottom: 0;">
+                    <span>&#128221; Surveillance Event Audit Log</span>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;" onclick="loadRecentLogs()">
+                        &#8635; Refresh Log
+                    </button>
+                    <a href="/api/logs/csv" download="crowd_surveillance_log.csv" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.78rem; text-decoration: none;">
+                        &#128190; Export CSV Log
+                    </a>
+                </div>
+            </div>
+
+            <div class="log-table-container">
+                <table class="log-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Location</th>
+                            <th>Weather Condition</th>
+                            <th>Crowd Count</th>
+                            <th>Visibility (Q_vis)</th>
+                            <th>Risk Score</th>
+                            <th>Alert Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-table-body">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading audit log events...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Architecture & Methodological Notes -->
+        <section class="notes-card">
+            <p style="margin-bottom: 0.5rem;">
+                <strong>Prototype Notice &amp; Architecture Specifications:</strong>
+                This system operates as a functional research prototype and demonstration platform for outdoor surveillance under adverse atmospheric conditions.
+            </p>
+            <ul style="padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                <li>
+                    <strong>CSRNet Density Regression:</strong> CSRNet regresses continuous spatial density maps \(\mathcal{D}(x,y)\) where crowd head count is obtained via spatial integration \(\iint \mathcal{D}(x,y) dx dy\). It does <em>not</em> output discrete bounding boxes or detector confidence percentages.
+                </li>
+                <li>
+                    <strong>Optical Visibility Index (\(Q_{\text{trans}}\)):</strong> Reports spatial transmission mean \(\frac{1}{HW}\sum t(x,y) \in [0.05, 1.0]\) directly from the PhysicsGuidedDehazeNet transmission branch, providing physical atmospheric attenuation clarity.
+                </li>
+                <li>
+                    <strong>Degradation Classification:</strong> Adverse atmospheric conditions (Fog, Rain, Glare) are categorized deterministically using physics and computer vision heuristics (Dark Channel Prior Mie scattering, vertical Sobel streak gradient asymmetry \(\partial I/\partial x\), and specular luminance bloom), explicitly documented as an optical analysis module.
+                </li>
+                <li>
+                    <strong>Risk Formulation:</strong> Evaluated via \(\text{Risk} = \min\left(1.0, \frac{\text{Count}}{\text{Max Capacity}} \times \text{Multiplier}_{\text{Weather}}\right)\), escalating through Low, Medium, High, and Critical alert thresholds.
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer>
+        <div>Adverse Weather Dynamic De-Hazing and Crowd Surveillance System &mdash; Research Demonstration Prototype</div>
+        <div>FastAPI &bull; PyTorch &bull; OpenCV &bull; Jinja2 &bull; CSRNet &bull; PhysicsGuidedDehazeNet</div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
