@@ -1,0 +1,263 @@
+project_name: DocuMind AI
+version: 0.1.0
+environment: development
+
+ingestion:
+  supported_extensions:
+    - .pdf
+    - .png
+    - .jpg
+    - .jpeg
+    - .tiff
+    - .bmp
+  supported_mime_types:
+    - application/pdf
+    - image/png
+    - image/jpeg
+    - image/tiff
+    - image/bmp
+  max_file_size_bytes: 52428800 # 50 MB
+  render_dpi: 300
+  pdf_rendering_timeout_seconds: 60
+  poppler_path: "C:/Users/Jnapikachowdary/Downloads/Release-26.09.0-0/poppler-26.09.0/Library/bin"
+
+preprocessing:
+  enabled: true
+  apply_grayscale: true
+  resize_max_dimension: 2500
+  target_width: null
+  apply_denoising: true
+  denoise_h: 10.0
+  apply_contrast_enhancement: true
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: 8
+  apply_binarization: false
+  binarization_method: otsu
+  apply_deskew: true
+  deskew_min_angle: 0.5
+  deskew_max_angle: 45.0
+  apply_border_cleanup: false
+  border_cleanup_fraction: 0.01
+  debug_save_intermediate_steps: false
+
+quality:
+  enabled: true
+  blur_threshold: 100.0
+  min_brightness: 40.0
+  max_brightness: 235.0
+  min_contrast: 30.0
+  min_width: 600
+  min_height: 600
+
+ocr:
+  engine_type: tesseract
+  languages:
+    - eng
+  page_segmentation_mode: 3
+  ocr_engine_mode: 3
+  min_confidence_threshold: 0.0
+  tesseract_cmd: null
+  preserve_interword_spaces: false
+
+classification:
+  default_type: unknown
+  confidence_threshold: 0.60
+  min_score: 2.0
+  min_evidence_count: 1
+  ambiguity_margin: 0.10
+  header_weight_multiplier: 1.25
+  keyword_weights_path: null
+
+extraction:
+  enabled: true
+  extractor_type: rule_based
+  confidence_threshold: 0.50
+  enable_regex_extraction: true
+  enable_kv_heuristics: true
+  enable_spatial_matching: true
+  enable_table_extraction: true
+  spatial:
+    same_line_tolerance_px: 12.0
+    max_horizontal_gap_px: 350.0
+    max_vertical_gap_px: 60.0
+    align_tolerance_px: 20.0
+  normalization:
+    normalize_currency: true
+    normalize_dates: true
+    default_date_order: DMY
+    strip_whitespace: true
+    normalize_phone_numbers: true
+  entities:
+    extract_dates: true
+    extract_money: true
+    extract_email: true
+    extract_phone: true
+    extract_identifiers: true
+    extract_organizations: true
+    extract_addresses: true
+    extract_persons: true
+  invoice_required_fields:
+    - invoice_number
+    - invoice_date
+    - vendor_name
+    - total
+  receipt_required_fields:
+    - merchant_name
+    - transaction_date
+    - total
+  form_required_fields:
+    - applicant_name
+    - date_of_birth
+
+tables:
+  enabled: true
+  detection:
+    min_rows: 1
+    min_columns: 2
+    max_row_gap_px: 60.0
+    enable_headerless_detection: true
+  reconstruction:
+    row_tolerance_px: 12.0
+    column_gap_threshold_px: 15.0
+    alignment_tolerance_px: 10.0
+    max_multiline_gap_factor: 1.6
+  validation:
+    amount_tolerance: 0.02
+    total_tolerance: 0.05
+    subtotal_tolerance: 0.05
+  continuation:
+    enabled: true
+    min_column_overlap_ratio: 0.65
+    max_column_count_diff: 0
+
+validation:
+  strict_mode: false
+  date_formats:
+    - "%Y-%m-%d"
+    - "%d/%m/%Y"
+    - "%m/%d/%Y"
+    - "%d-%m-%Y"
+    - "%B %d, %Y"
+    - "%b %d, %Y"
+    - "%d %b %Y"
+    - "%d %B %Y"
+  currency_symbols:
+    - "$"
+    - "€"
+    - "£"
+    - "₹"
+    - "¥"
+    - "USD"
+    - "EUR"
+    - "GBP"
+    - "INR"
+  subtotal_tax_tolerance: 0.05
+  line_item_amount_tolerance: 0.02
+  table_subtotal_tolerance: 0.05
+  min_valid_year: 1900
+  max_valid_year: 2100
+  enable_required_field_validation: true
+  enable_format_validation: true
+  enable_cross_field_validation: true
+  enable_arithmetic_validation: true
+  enable_conflict_detection: true
+  enable_table_validation: true
+
+confidence:
+  enabled: true
+  ocr_weight: 0.35
+  extraction_weight: 0.40
+  validation_weight: 0.25
+  review_confidence_threshold: 0.70
+  flag_missing_required_fields: true
+
+  field:
+    extraction_weight: 0.45
+    ocr_weight: 0.35
+    validation_weight: 0.20
+    conflict_penalty: 0.15
+    high_threshold: 0.85
+    medium_threshold: 0.65
+    low_threshold: 0.40
+    min_confidence_threshold: 0.60
+
+  table:
+    structure_weight: 0.30
+    row_weight: 0.30
+    cell_weight: 0.20
+    validation_weight: 0.20
+    high_threshold: 0.85
+    medium_threshold: 0.65
+    low_threshold: 0.40
+    min_line_item_threshold: 0.60
+
+  document:
+    classification_weight: 0.20
+    field_weight: 0.40
+    table_weight: 0.20
+    validation_weight: 0.20
+    high_threshold: 0.85
+    medium_threshold: 0.65
+    low_threshold: 0.40
+    review_confidence_threshold: 0.70
+
+  review:
+    enabled: true
+    low_confidence_threshold: 0.70
+    critical_validation_required: true
+    missing_required_field: true
+    conflict_detection: true
+    table_arithmetic_mismatch: true
+    low_ocr_threshold: 0.60
+    low_extraction_threshold: 0.50
+    max_low_confidence_fields_for_auto_approval: 0
+
+  priority:
+    critical: "urgent"
+    high: "high"
+    medium: "medium"
+    low: "low"
+
+visualization:
+  enabled: true
+  output:
+    directory: "outputs/visualizations"
+    format: "png"
+    save_manifest: true
+    save_summary: true
+    overwrite_existing: true
+  layers:
+    ocr: true
+    fields: true
+    entities: true
+    tables: true
+    validation: true
+    confidence: true
+    review: true
+  rendering:
+    line_width: 2
+    font_size: 12
+    show_labels: true
+    show_confidence: true
+    show_review_reasons: true
+    max_labels_per_page: 300
+    opacity: 0.85
+    draw_legend: true
+  coordinates:
+    clip_to_page: true
+    require_valid_dimensions: true
+    reject_unknown_coordinate_system: true
+  evidence:
+    include_source_text: true
+    include_provenance: true
+    include_unlocated_evidence: true
+
+storage:
+  base_dir: "."
+  input_dir: "data/input"
+  samples_dir: "data/samples"
+  processed_dir: "data/processed"
+  output_json_dir: "outputs/json"
+  output_csv_dir: "outputs/csv"
+  output_reports_dir: "outputs/reports"
+  output_visualizations_dir: "outputs/visualizations"
