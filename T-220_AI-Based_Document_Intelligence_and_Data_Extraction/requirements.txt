@@ -1,0 +1,33 @@
+# ==============================================================================
+# DocuMind AI - Project Dependencies
+# ==============================================================================
+# This requirements specification is partitioned by subsystem with explicit
+# technical justifications for each dependency.
+# ==============================================================================
+
+# Core Runtime & Configuration
+pydantic>=2.0.0            # Strict data validation, settings management, and serialization
+PyYAML>=6.0.0              # Configuration file parsing (.yaml)
+typing_extensions>=4.8.0   # Advanced type hinting protocols and annotations
+
+# Document Ingestion & Page Rendering
+Pillow>=10.0.0             # Image manipulation, raster conversion, format validation
+pypdf>=3.17.0              # Native PDF inspection, page count extraction, metadata extraction
+pdf2image>=1.16.3          # High-resolution PDF page rendering to PIL images for OCR
+
+# Image Preprocessing & Computer Vision
+numpy>=1.24.0              # Numerical array operations for image buffers and bounding boxes
+opencv-python-headless>=4.8.0 # Deskewing, denoising, adaptive thresholding, morphological ops
+
+# OCR Engine Abstractions (Backends)
+pytesseract>=0.3.10        # Local Tesseract OCR wrapper for baseline text/bbox extraction
+
+# Data Structuring & Tabular Representation
+pandas>=2.0.0              # Structured table representation and CSV exporting
+
+# Testing & Quality Assurance
+pytest>=7.4.0              # Unit and integration test runner
+pytest-cov>=4.1.0          # Code coverage reporting
+
+# Presentation & Verification UI (Phase 2+)
+streamlit>=1.30.0          # Interactive dashboard for review and provenance inspection
