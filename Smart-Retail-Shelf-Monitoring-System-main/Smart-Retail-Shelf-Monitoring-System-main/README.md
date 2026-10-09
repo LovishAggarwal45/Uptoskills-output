@@ -97,7 +97,7 @@ python -m streamlit run app.py
 
 ## 👩‍💻 Developed By
 
-**Swathi Ankisetty**
+**Amlan Pruthijeet**
 
 ### Academic Mini Project
 
