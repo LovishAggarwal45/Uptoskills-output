@@ -1,131 +1,135 @@
-# Wrong-Way Driving & Lane Discipline Violation Detection
+# 🚗 Wrong-Way Driving & Lane Discipline Violation Detection
 
-An intelligent AI traffic monitoring system that detects:
-- **Wrong-Way Driving** — vehicles moving against the traffic flow direction
-- **Lane Discipline Violations** — vehicles straddling lane boundaries
+**AI-Powered Intelligent Traffic Monitoring & Violation Detection System**
 
-Built with **YOLOv8 + ByteTrack** for robust multi-vehicle tracking, **Shapely** for precise lane geometry, and **OpenCV** for video I/O and annotation.
+The **Wrong-Way Driving & Lane Discipline Violation Detection** system is an AI-driven computer vision application built to monitor traffic, track vehicle trajectories, detect vehicles traveling against traffic flow, and identify lane straddling/discipline violations in real-time.
+
+It integrates YOLOv8 vehicle detection with multi-object tracking, direction estimation algorithms, and a web application interface for easy analysis and reporting.
 
 ---
 
-## Quick Start
+## ✨ Features
 
-### 1. Launch the Local Web Application (Recommended)
-You can start the complete interactive web app locally with live streaming, controls, and video clip player:
-```bash
+- 🚘 **Vehicle Detection & Tracking:** Detects vehicles (cars, buses, trucks, motorcycles) using YOLOv8 and tracks their movements across frames.
+- 📐 **Trajectory & Direction Estimation:** Analyzes vehicle paths to determine motion vectors and heading directions.
+- 🛣️ **Lane Segmentation & Direction Mapping:** Maps traffic lanes and enforces directional flow logic per lane.
+- ⚠️ **Violation Logic & Persistence Threshold:** Detects wrong-way driving and lane straddling using persistence thresholding to minimize false alerts.
+- 🎬 **Violation Clip Recorder:** Automatically cuts and saves short video clips when violations are detected.
+- 📊 **CSV Data Logging:** Logs comprehensive violation details including vehicle type, lane ID, timestamp, and confidence score.
+- 💻 **Web Application & Dashboard:** Interactive Flask web interface to upload traffic footage and review real-time violation analytics.
+
+---
+
+## 🤖 AI Models & Core Components
+
+| Component | File / Model | Purpose |
+| :--- | :--- | :--- |
+| **Object Detection** | `yolov8n.pt` | Real-time vehicle detection |
+| **Detection & Tracking** | `detector_tracker.py` | Integrates YOLO detection with object tracking algorithms |
+| **Lane Management** | `lane_manager.py` | Handles lane segmentation and direction mapping |
+| **Trajectory Estimation**| `trajectory_estimator.py` | Computes vehicle trajectory vectors and direction angles |
+| **Violation Engine** | `violation_detector.py` | Evaluates persistent violation rules (Wrong-way & Lane discipline) |
+| **Clip Recorder** | `clip_recorder.py` | Generates and exports video clips for flagged violations |
+| **CSV Logger** | `csv_logger.py` | Records structured violation metadata into CSV format |
+
+---
+
+## 🔄 Workflow
+
+
+📷 Upload / Stream Traffic Video
+               ↓
+🤖 Vehicle Detection (YOLOv8) & Tracking
+               ↓
+📐 Trajectory Estimation & Lane Mapping
+               ↓
+⚠️ Violation Logic Evaluation (Wrong-Way / Lane Straddling)
+               ↓
+🎬 Record Violation Clips  +  📊 Log CSV Data
+               ↓
+🖥️ Interactive Web Dashboard & Report Generation
+---
+
+## 🧠 Technologies & Tools
+
+ * Language: Python 3.x
+ * Computer Vision & AI: OpenCV, Ultralytics YOLOv8, PyTorch
+ * Data Processing: NumPy, Pandas
+ * Web Framework: Flask, HTML5/CSS3
+ * Visualization: Matplotlib / OpenCV Drawing Utilities
+---
+
+## 📁 Project Structure
+
+Wrong-Way-Driving-and-Lane-Discipline-Violation-Detection/
+│
+├── app.py                      # Flask web application entry point
+├── main.py                     # CLI execution script
+├── config.py                   # Global configuration & parameters
+│
+├── detector_tracker.py         # Object detection and tracking module
+├── lane_manager.py             # Lane segmentation and flow direction map
+├── trajectory_estimator.py     # Trajectory and direction estimation
+├── violation_detector.py       # Core violation detection logic
+├── clip_recorder.py            # Video clip recorder for violation events
+├── csv_logger.py               # CSV logging utility
+├── visualizer.py               # Video annotation & visualization helpers
+├── analyze_violations.py       # Post-processing analytics script
+│
+├── yolov8n.pt                  # YOLOv8 target model weights
+├── requirements.txt            # Python dependencies
+├── run_web.bat                 # Windows batch execution script
+├── run_web.ps1                 # PowerShell execution script
+│
+├── output/                     # Directory for generated results
+│   ├── violation_clips/        # Saved video clips of detected violations
+│   ├── annotated_traffic.mp4   # Annotated full output video
+│   ├── report.html             # Generated HTML summary report
+│   └── violations.csv          # Exported CSV log files
+│
+├── templates/                  # Web dashboard HTML templates
+│   └── index.html
+│
+├── tests/                      # Automated test scripts
+│   └── test_pipeline.py
+│
+└── uploads/                    # Uploaded input video files
+---
+
+## ▶️ Run Locally
+
+1. Clone the repository
+git clone [https://github.com/pruthijeetamlan-ai/Wrong-Way-Driving-and-Lane-Discipline-Violation-Detection.git](https://github.com/pruthijeetamlan-ai/Wrong-Way-Driving-and-Lane-Discipline-Violation-Detection.git)
+cd Wrong-Way-Driving-and-Lane-Discipline-Violation-Detection
+
+2. Install dependencies
+pip install -r requirements.txt
+
+3. Run via CLI
+python main.py
+
+4. Run Web Application
 python app.py
-```
-Or double-click `run_web.bat`. Then open your browser at **[http://127.0.0.1:5000](http://127.0.0.1:5000)**.
 
-### 2. CLI: Run on your own video
-```bash
-python main.py --video your_traffic_video.mp4
-```
-
-### 3. Run on the included sample
-```bash
-python main.py --video sample_traffic.mp4
-```
-
-### 4. Run with live display
-```bash
-python main.py --video sample_traffic.mp4 --display
-```
-
-### 5. Generate Violation Audit Report & HTML Dashboard
-```bash
-python analyze_violations.py --csv output/violations_real.csv --report output/report.html
-```
-
-### 6. Run Test Suite
-```bash
-python tests/test_pipeline.py
-```
-
+Alternatively on Windows, double-click run_web.bat or execute ./run_web.ps1 in PowerShell.
+Open http://localhost:5000 in your browser to view the web dashboard.
 ---
 
-## Command Line Options
+## 🚀 Future Enhancements
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--video` | `sample_traffic.mp4` | Input video file / webcam index / RTSP stream |
-| `--output-video` | `output/annotated_traffic.mp4` | Output annotated video |
-| `--output-csv` | `output/violations.csv` | Violations log CSV |
-| `--clips-dir` | `output/violation_clips/` | Per-violation clip directory |
-| `--display` | off | Show live OpenCV window |
-| `--max-frames` | none | Limit frames processed |
-| `--skip-calib` | off | Skip auto-calibration (for live streams) |
-
+ * 📹 Live RTSP Camera Stream Integration: Support for direct IP camera feed streaming.
+ * 🚨 Real-Time Notification System: Instant email or Webhook alerts upon violation detection.
+ * 🌙 Night Vision & Adverse Weather Optimization: Fine-tuned detection for low-light conditions.
+ * 🚘 License Plate Recognition (ANPR): Automated vehicle plate identification during violation recording.
 ---
+   
+## 👩‍💻 Developed By
 
-## Output
+Amlan Pruthijeet
 
-| File | Description |
-|------|-------------|
-| `output/annotated_traffic.mp4` | Full video with lanes, trails, arrows, HUD & alerts |
-| `output/violations.csv` | vehicle_type, lane, timestamp, confidence, deviation_deg |
-| `output/violation_clips/clip_VIO-*.mp4` | 3-second clips per violation (pre+post roll) |
+Internship(Outskill)
 
+Task T230 - Wrong-Way Driving & Lane Discipline Violation Detection System
+
+Domain: Artificial Intelligence & Computer Vision
 ---
-
-## System Architecture
-
-```
-Video → YOLO Detect → ByteTrack → Trajectory Smoothing
-     → Lane Polygon Intersection
-     → Heading vs Learned Flow Comparison   → Wrong-Way check
-     → Multi-Lane Overlap Ratio             → Straddling check
-     → Persistence Threshold Filter
-     → Alert + Clip + CSV Log
-```
-
----
-
-## Project Files
-
-| File | Purpose |
-|------|---------|
-| `main.py` | Pipeline orchestrator with auto-calibration |
-| `config.py` | All tunable parameters + lane definitions |
-| `detector_tracker.py` | YOLOv8 + ByteTrack vehicle detection |
-| `trajectory_estimator.py` | Smoothed heading estimation per vehicle |
-| `lane_manager.py` | Lane polygon geometry + flow learning |
-| `violation_detector.py` | Persistence-threshold violation logic |
-| `clip_recorder.py` | Pre/post-roll violation clip recorder |
-| `csv_logger.py` | Structured CSV violation logger |
-| `visualizer.py` | HUD overlays, trails, flashing alerts |
-| `analyze_violations.py` | Violation analytics summary & interactive HTML report generator |
-| `tests/test_pipeline.py` | Automated unit & integration test suite |
-| `generate_sample_video.py` | Synthetic test video generator |
-| `requirements.txt` | Python dependencies |
-
----
-
-## Adapting Lane Definitions
-
-Edit `DEFAULT_LANES_720P` in `config.py` to match your camera layout:
-
-```python
-LaneDefinition(
-    lane_id=1,
-    name="Lane 1 (Left)",
-    polygon=[(0, 0), (427, 0), (427, 720), (0, 720)],   # Shapely polygon
-    expected_heading_deg=340.0,   # 270=North, 90=South, 0=East, 180=West
-    allowed_angle_deviation_deg=110.0,
-)
-```
-
-The auto-calibration phase will refine these headings automatically from the first 120 frames.
-
----
-
-## Key Parameters (config.py)
-
-```python
-wrong_way_persistence_frames = 8    # frames before WW alert fires
-wrong_way_angle_threshold    = 100  # degree deviation to classify as wrong-way
-straddle_persistence_frames  = 15   # frames before straddle alert fires
-straddle_overlap_min_ratio   = 0.15 # 15% overlap in 2nd lane = straddling
-pre_roll_frames              = 45   # ~1.5s clip buffer before alert
-post_roll_frames             = 45   # ~1.5s clip recording after alert
-```
