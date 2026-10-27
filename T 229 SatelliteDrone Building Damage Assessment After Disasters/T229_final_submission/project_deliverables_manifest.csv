@@ -1,0 +1,11 @@
+deliverable,path,exists,size_bytes,status
+ResNet18 validation metrics,/content/drive/MyDrive/T229/reports/final_deliverables/building_classifier_metrics.csv,True,320,Verified
+ResNet18 confusion matrix,/content/drive/MyDrive/T229/reports/final_deliverables/building_classifier_confusion_matrix.csv,True,155,Verified
+ResNet18 summary,/content/drive/MyDrive/T229/reports/final_deliverables/building_classifier_summary.json,True,413,Verified
+ResNet18 validation predictions,/content/drive/MyDrive/T229/reports/resnet18_context_validation_predictions.csv,True,390209,Verified; validation split
+U-Net Florence heatmap,/content/drive/MyDrive/T229/reports/hurricane-florence_00000537_damage_heatmap.png,True,1507211,Existing; illustrative only
+U-Net Florence building CSV,/content/drive/MyDrive/T229/reports/hurricane-florence_00000537_per_building_damage.csv,True,3383,Weak sample; do not claim accurate
+Harvey U-Net overlay,/content/drive/MyDrive/T229/reports/hurricane-harvey_00000132_validation_damage_overlay.png,True,1505875,Existing; needs cautious interpretation
+Harvey ResNet18 overlay,/content/drive/MyDrive/T229/reports/hurricane-harvey_00000387_resnet18_damage_overlay.png,True,1459999,Existing; scene-level accuracy 41.84%
+U-Net validation metrics,/content/drive/MyDrive/T229/reports/siamese_unet_validation_metrics.csv,True,227,Needs reconciliation with fresh evaluation
+Footprint evaluation summary,/content/drive/MyDrive/T229/reports/footprint_mask_summary.csv,True,141,Existing; limited performance
