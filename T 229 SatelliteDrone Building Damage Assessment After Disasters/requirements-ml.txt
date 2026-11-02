@@ -1,0 +1,4 @@
+# Optional: install after requirements.txt when a compatible local checkpoint is available.
+shapely>=2.0,<3
+torch>=2.2,<3
+torchvision>=0.17,<1

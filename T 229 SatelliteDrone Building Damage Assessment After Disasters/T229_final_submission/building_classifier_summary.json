@@ -1,0 +1,16 @@
+{
+  "model": "ResNet18 context building classifier",
+  "evaluation_split": "validation",
+  "validation_buildings": 2886,
+  "correct_predictions": 2548,
+  "accuracy": 0.8828828828828829,
+  "macro_f1": 0.8836019786934827,
+  "weighted_f1": 0.883955163814129,
+  "classes": [
+    "destroyed",
+    "major-damage",
+    "minor-damage",
+    "no-damage"
+  ],
+  "note": "Validation metrics; not held-out test-set results."
+}

@@ -1,0 +1,6 @@
+class,precision,recall,f1,iou
+background,0.9884,0.9066,0.9457,0.8971
+no_damage,0.4323,0.6691,0.5252,0.3561
+minor_damage,0.0995,0.2793,0.1468,0.0792
+major_damage,0.1102,0.2492,0.1528,0.0827
+destroyed,0.3431,0.4555,0.3914,0.2433
