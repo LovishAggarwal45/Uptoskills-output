@@ -1,0 +1,20 @@
+# Video Processing & Computer Vision
+# Required to "Process surveillance video/data"
+opencv-python>=4.8.0
+
+# Deep Learning Frameworks
+# Required to "Apply a deep learning model" and detect people
+torch>=2.0.0
+torchvision>=0.15.0
+ultralytics>=8.0.0  # Optional but highly recommended: YOLOv8 is industry standard for real-time crowd/object detection
+
+# Data Manipulation & Feature Extraction
+# Required to calculate density/motion and handle structured data
+numpy>=1.24.0
+scipy>=1.10.0      # Useful for clustering algorithms or spatial distance calculations
+pandas>=2.0.0      # Required for the "CSV report containing timestamp, location..."
+
+# Visualization
+# Required for the "Analysis/visualization result"
+matplotlib>=3.7.0
+seaborn>=0.12.0    # Optional: Makes statistical plotting and heatmaps easier
