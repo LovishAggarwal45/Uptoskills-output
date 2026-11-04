@@ -1,0 +1,17 @@
+# Input videos
+uploads/
+
+# Python environment
+venv/
+.venv/
+
+# Model weights
+*.pt
+*.pth
+
+# Generated outputs
+outputs/plate_crops/
+outputs/enhanced_plates/
+outputs/*.mp4
+__pycache__/
+*.py[cod]

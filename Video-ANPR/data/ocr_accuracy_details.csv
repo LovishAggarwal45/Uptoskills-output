@@ -1,0 +1,3 @@
+frame,time_sec,car_id,plate_detection_confidence,original_ocr,original_ocr_confidence,original_valid,enhanced_ocr,enhanced_ocr_confidence,enhanced_valid,final_voted_plate,vote_count,final_confidence,ground_truth,ground_truth_normalized,original_normalized,enhanced_normalized,original_correct,enhanced_correct
+93,3.1,6,0.3775,1.0,-1.0,False,1.0,-1.0,False,,0,0.0,TN09AB1234,TN09AB1234,,,False,False
+96,3.2,6,0.3732,1.0,-1.0,False,1.0,-1.0,False,,0,0.0,TN09AB1234,TN09AB1234,,,False,False

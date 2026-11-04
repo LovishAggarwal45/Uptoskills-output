@@ -1,0 +1,16 @@
+numpy
+torch
+torchvision
+ultralytics
+easyocr
+opencv-python
+streamlit
+pandas
+scipy
+filterpy
+scikit-image
+lap
+matplotlib
+basicsr
+realesrgan
+Pillow
